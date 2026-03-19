@@ -1,0 +1,88 @@
+# =========================
+# OS / SYSTEM FILES
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# EDITOR / IDE FILES
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# =========================
+# BUILD FILES (C / C++)
+# =========================
+*.o
+*.out
+*.exe
+*.a
+*.so
+*.dSYM/
+build/
+bin/
+
+# =========================
+# JAVA BUILD FILES
+# =========================
+*.class
+*.jar
+*.war
+*.ear
+target/
+out/
+build/
+
+# =========================
+# LISP (optional temp files)
+# =========================
+*.fasl
+*.fas
+*.lx64fsl
+*.lib
+
+# =========================
+# LOGS / TEMP FILES
+# =========================
+*.log
+tmp/
+temp/
+
+# =========================
+# ARCHIVES (DON’T TRACK BUILDS)
+# =========================
+*.zip
+*.tar
+*.gz
+
+# =========================
+# EXECUTABLES FROM PROJECT
+# =========================
+procedural/*.out
+procedural/*.exe
+oop/*.class
+functional/*.fasl
+
+# =========================
+# ENV FILES (if any)
+# =========================
+.env
+
+# =========================
+# IMPORTANT: DO NOT IGNORE THESE
+# =========================
+# Keep source code and test cases tracked
+!*.c
+!*.cpp
+!*.h
+!*.java
+!*.lisp
+!*.scm
+!run_all.sh
+!README.txt
+!docs/
+!tests/
+!challenges/
