@@ -1,12 +1,18 @@
 # =========================
+
 # OS / SYSTEM FILES
+
 # =========================
+
 .DS_Store
 Thumbs.db
 
 # =========================
-# EDITOR / IDE FILES
+
+# VS CODE / EDITOR
+
 # =========================
+
 .vscode/
 .idea/
 *.swp
@@ -14,20 +20,39 @@ Thumbs.db
 *~
 
 # =========================
-# BUILD FILES (C / C++)
+
+# C / C++ BUILD FILES
+
 # =========================
+
 *.o
+*.obj
 *.out
 *.exe
 *.a
 *.so
+*.dll
 *.dSYM/
+
+# Visual Studio specific
+
+*.ilk
+*.pdb
+*.idb
+
+# Build folders
+
 build/
 bin/
+Debug/
+Release/
 
 # =========================
+
 # JAVA BUILD FILES
+
 # =========================
+
 *.class
 *.jar
 *.war
@@ -37,52 +62,75 @@ out/
 build/
 
 # =========================
-# LISP (optional temp files)
+
+# COMMON LISP BUILD FILES
+
 # =========================
+
 *.fasl
 *.fas
 *.lx64fsl
-*.lib
 
 # =========================
-# LOGS / TEMP FILES
+
+# LOGS / TEMP
+
 # =========================
+
 *.log
 tmp/
 temp/
 
 # =========================
-# ARCHIVES (DON’T TRACK BUILDS)
+
+# ARCHIVES (DO NOT TRACK BUILDS)
+
 # =========================
+
 *.zip
 *.tar
 *.gz
 
 # =========================
-# EXECUTABLES FROM PROJECT
+
+# PROJECT-SPECIFIC BINARIES
+
 # =========================
-procedural/*.out
+
 procedural/*.exe
+procedural/*.out
 oop/*.class
 functional/*.fasl
 
 # =========================
-# ENV FILES (if any)
+
+# ENV / LOCAL CONFIG
+
 # =========================
+
 .env
 
 # =========================
-# IMPORTANT: DO NOT IGNORE THESE
+
+# IMPORTANT: KEEP THESE TRACKED
+
 # =========================
-# Keep source code and test cases tracked
+
 !*.c
 !*.cpp
 !*.h
 !*.java
 !*.lisp
 !*.scm
+
 !run_all.sh
 !README.txt
-!docs/
+
+# Project structure required by assignment
+
+!procedural/
+!oop/
+!functional/
 !tests/
 !challenges/
+!docs/
