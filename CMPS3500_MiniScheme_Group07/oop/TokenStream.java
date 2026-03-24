@@ -17,8 +17,8 @@ public class TokenStream {
     private TokenNode tail;
 
     public TokenStream() {
-        head = new TokenNode(new Token(TokenType.BEGIN_STREAM, "NULL"));
-        tail = new TokenNode(new Token(TokenType.END_STREAM, "NULL"));
+        tail = new TokenNode(new Token(TokenType.BEGIN_STREAM, "NULL"));
+        head = new TokenNode(new Token(TokenType.END_STREAM, "NULL"));
         head.next = tail;
         tail.prev = head;
     }
@@ -33,14 +33,18 @@ public class TokenStream {
     }
 
     public Token dequeue() {
-        if (head.next == tail) return null;
-        Token token = tail.prev.data;
-        tail.prev = tail.prev.prev;
-        tail.prev.next = tail;
+        if (tail == null) return null;
+        Token token = tail.data;
+        if (tail == head) {
+            tail = null;
+        } 
+        else {
+            tail = tail.prev;
+        }
         return token;
-    }
+}
 
     public Token peek() {
-        return tail.prev.data;
+        return (tail == null) ? null : tail.data;
     }
 }

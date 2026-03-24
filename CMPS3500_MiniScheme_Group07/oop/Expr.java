@@ -54,6 +54,27 @@ public abstract class Expr {
         }
     }
 
+    static class OperatorExpr extends Expr {
+        // Arithmetic and boolean operations
+        public final char op;
+        public Expr operand1;
+        public Expr operand2;
+
+        public OperatorExpr(char _op) {
+            op = _op;
+            operand1 = null;
+            operand2 = null;
+        }
+
+        @Override
+        public Expr AddTo(Expr _newExpr) throws ParserException {
+            if (operand1 == null) operand1 = _newExpr;
+            else if (operand2 == null) operand2 = _newExpr;
+            else throw new ParserException.InvalidAdd("Operator expression is already full");
+            return this;
+        }
+    }
+
     static class IfExpr extends Expr {
         // if statements
         public Expr condition;
@@ -188,18 +209,17 @@ public abstract class Expr {
     static class CallExpr extends Expr {
         // function calls
         public Expr function;
-        public Expr params;
+        public List<Expr> args;
 
         public CallExpr() {
             function = null;
-            params = null;
+            args = new ArrayList<>();;
         }
 
         @Override
         public Expr AddTo(Expr _newExpr) throws ParserException {
             if (function == null) function = _newExpr;
-            else if (params == null) params = _newExpr;
-            else throw new ParserException.InvalidAdd("Call expression is already full");
+            else args.add(_newExpr);
             return this;
         }
     }
