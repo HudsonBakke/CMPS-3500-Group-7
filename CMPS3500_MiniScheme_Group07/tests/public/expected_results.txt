@@ -1,0 +1,28 @@
+addon_01.scm -> Status: OK | Result: 20 | Type: int
+addon_02.scm -> Status: OK | Result: -1 | Type: int
+addon_03.scm -> Status: OK | Result: 99 | Type: int
+bool_01.scm -> Result: #t ; Type: bool
+bool_02.scm -> Result: #t ; Type: bool
+bool_03.scm -> Result: #t ; Type: bool
+challenge_public_01.scm -> Status: OK | Result: 15 | Type: int
+challenge_public_02.scm -> Status: OK | Result: 12 | Type: int
+challenge_public_03.scm -> Status: OK | Result: 10 | Type: int
+core_01.scm -> Status: OK | Result: 42 | Type: int
+core_02.scm -> Status: OK | Result: 3 | Type: int
+core_03.scm -> Status: OK | Result: 9 | Type: int
+core_04.scm -> Status: OK | Result: 10 | Type: int
+error_01.scm -> Status: ERROR | Error: UNDECLARED_IDENTIFIER
+error_02.scm -> Status: ERROR | Error: DIVISION_BY_ZERO
+error_03.scm -> Status: ERROR | Error: WRONG_ARITY
+error_04.scm -> Status: ERROR | Error: TYPE_MISMATCH
+lambda_01.scm -> Status: OK | Result: 6 | Type: int
+lambda_02.scm -> Status: OK | Result: 7 | Type: int
+lambda_03.scm -> Status: OK | Result: 8 | Type: int
+let_01.scm -> Status: OK | Result: 11 | Type: int
+let_02.scm -> Status: OK | Result: 20 | Type: int
+let_03.scm -> Status: OK | Result: 7 | Type: int
+recursion_01.scm -> Status: OK | Result: 120 | Type: int
+recursion_02.scm -> Status: OK | Result: 10 | Type: int
+syntax_01.scm -> Status: ERROR | Error: PARSE_ERROR
+syntax_02.scm -> Status: ERROR | Error: PARSE_ERROR
+syntax_03.scm -> Status: ERROR | Error: PARSE_ERROR
