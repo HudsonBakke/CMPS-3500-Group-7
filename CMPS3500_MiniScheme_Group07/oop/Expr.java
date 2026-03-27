@@ -1,12 +1,22 @@
+/**************************************
+ * NAME: Hudson Bakke
+ * FILE: Expr.java
+ * ASGT: CMPS 3500 Group Project
+ * DATE: 3/27/2026
+ **************************************/
+
 import java.util.ArrayList;
 import java.util.List;
 
+/// Abstract Expr class: extended to support all types of expressions in MiniScheme
 public abstract class Expr {
 
     public abstract Expr AddTo(Expr _newExpr) throws ParserException;
 
+    /// AST root
+    /// May contain any amount of children of any type except Binding, BindingList, or ParamList
     static class RootExpr extends Expr {
-        // Root of the AST
+
         public List<Expr> children;
         public RootExpr() { children = new ArrayList<>(); }
 
@@ -15,52 +25,64 @@ public abstract class Expr {
             if (_newExpr instanceof Binding ||
                 _newExpr instanceof BindingList ||
                 _newExpr instanceof ParamList
-            ) throw new ParserException.InvalidNodeType("Cannot add node of type " + _newExpr.getClass().getName());
+            ) throw new ParserException.InvalidNodeType
+                ("Cannot add node of type " + _newExpr.getClass().getName());
             children.add(_newExpr);
             return this;
         }
     }
 
+    /// Integer literals
+    /// atom node - cannot have children
     static class IntExpr extends Expr {
-        // Integer literals
+
         public final int value;
         public IntExpr(int _val) { value = _val; }
 
         @Override
         public Expr AddTo(Expr _newExpr) throws ParserException {
-            throw new ParserException.InvalidAdd("You cannot add a sub expression to an int literal");
+            throw new ParserException.InvalidAdd
+                ("You cannot add a sub expression to an int literal");
         }
     }
 
+    /// Boolean literals
+    /// atom node - cannot have children
     static class BoolExpr extends Expr {
-        // Boolean literals
+
         public final boolean value;
         public BoolExpr(boolean _val) { value = _val; }
 
         @Override
         public Expr AddTo(Expr _newExpr) throws ParserException {
-            throw new ParserException.InvalidAdd("You cannot add a sub expression to a bool literal");
+            throw new ParserException.InvalidAdd
+                ("You cannot add a sub expression to a bool literal");
         }
     }
 
+    /// Programmer-defined symbols
+    /// atom node - cannot have children
     static class SymbolExpr extends Expr {
-        // Identifiers
+
         public final String name;
         public SymbolExpr(String _name) { name = _name; }
 
         @Override
         public Expr AddTo(Expr _newExpr) throws ParserException {
-            throw new ParserException.InvalidAdd("You cannot add a sub expression to a symbol");
+            throw new ParserException.InvalidAdd
+                ("You cannot add a sub expression to a symbol");
         }
     }
 
+    /// Math and logic operations
+    /// Must have exactly 3 children - an operator, and 2 operands
     static class OperatorExpr extends Expr {
-        // Arithmetic and boolean operations
-        public final char op;
+
+        public final String op;
         public Expr operand1;
         public Expr operand2;
 
-        public OperatorExpr(char _op) {
+        public OperatorExpr(String _op) {
             op = _op;
             operand1 = null;
             operand2 = null;
@@ -70,13 +92,16 @@ public abstract class Expr {
         public Expr AddTo(Expr _newExpr) throws ParserException {
             if (operand1 == null) operand1 = _newExpr;
             else if (operand2 == null) operand2 = _newExpr;
-            else throw new ParserException.InvalidAdd("Operator expression is already full");
+            else throw new ParserException.InvalidAdd
+                ("Operator expression is already full");
             return this;
         }
     }
 
+    /// Conditional expressions
+    /// Must have exactly 3 children - a condition, a THEN, and an ELSE
     static class IfExpr extends Expr {
-        // if statements
+
         public Expr condition;
         public Expr then_expr;
         public Expr else_expr;
@@ -92,13 +117,16 @@ public abstract class Expr {
             if (condition == null) condition = _newExpr;
             else if (then_expr == null) then_expr = _newExpr;
             else if (else_expr == null) else_expr = _newExpr;
-            else throw new ParserException.InvalidAdd("If expression is already full");
+            else throw new ParserException.InvalidAdd
+                ("If expression is already full");
             return this;
         }
     }
 
+    /// Let bindings
+    /// Must have exactly 2 children - a name (symbol) and a value
     static class Binding extends Expr {
-        // A single let statement binding
+
         public Expr name;
         public Expr value;
 
@@ -111,13 +139,16 @@ public abstract class Expr {
         public Expr AddTo(Expr _newExpr) throws ParserException {
             if (name == null) name = _newExpr;
             else if (value == null) value = _newExpr;
-            else throw new ParserException.InvalidAdd("Binding expression is already full");
+            else throw new ParserException.InvalidAdd
+                ("Binding expression is already full");
             return this;
         }
     }
 
+    /// List of let bindings
+    /// May have any number of children but they must all be of type Binding
     static class BindingList extends Expr {
-        // A list of bindings for one let expression
+
         public List<Expr> bindings;
         public BindingList() { bindings = new ArrayList<>();}
 
@@ -128,8 +159,10 @@ public abstract class Expr {
         }
     }
 
+    /// Let expression
+    /// Must have exactly 2 children - a binding list and a body
     static class LetExpr extends Expr {
-        // let statements
+
         public Expr bindings;
         public Expr body;
 
@@ -142,13 +175,16 @@ public abstract class Expr {
         public Expr AddTo(Expr _newExpr) throws ParserException {
             if (bindings == null) bindings = _newExpr;
             else if (body == null) body = _newExpr;
-            else throw new ParserException.InvalidAdd("Let expression is already full");
+            else throw new ParserException.InvalidAdd
+                ("Let expression is already full");
             return this;
         }
     }
 
+    /// Parameter list
+    /// May have any number of children but they must all be of type SymbolExpr
     static class ParamList extends Expr {
-        // holds function parameters
+
         public List<Expr> params;
         public ParamList() { params = new ArrayList<>(); }
 
@@ -159,8 +195,10 @@ public abstract class Expr {
         }
     }
 
+    /// Lambda expressions
+    /// Must have exactly 2 children - a parameter list and a body
     static class LambdaExpr extends Expr {
-        // lambda statements
+
         public Expr params;
         public Expr body;
 
@@ -173,13 +211,16 @@ public abstract class Expr {
         public Expr AddTo(Expr _newExpr) throws ParserException {
             if (params == null) params = _newExpr;
             else if (body == null) body = _newExpr;
-            else throw new ParserException.InvalidAdd("Lambda expression is already full");
+            else throw new ParserException.InvalidAdd
+                ("Lambda expression is already full");
             return this;
         }
     }
 
+    /// Define statements
+    /// Must have exactly 2 children - a name (symbol) and a value
     static class DefineExpr extends Expr {
-        // define statements
+
         public Expr name;
         public Expr value;
 
@@ -192,22 +233,26 @@ public abstract class Expr {
         public Expr AddTo(Expr _newExpr) throws ParserException {
             if (name == null) name = _newExpr;
             else if (value == null) value = _newExpr;
-            else throw new ParserException.InvalidAdd("Define expression is already full");
+            else throw new ParserException.InvalidAdd
+                ("Define expression is already full");
             return this;
         }
     }
 
+    /// Cond expressions
+    /// To be implemented later
     static class CondExpr extends Expr {
-        // cond statements
-        // to be implemented later
+
         @Override
         public Expr AddTo(Expr _newExpr) throws ParserException {
             return this;
         }
     }
 
+    /// Function calls
+    /// Must have at least 1 child - a function (either symbol or lambda) and any number of arguments
     static class CallExpr extends Expr {
-        // function calls
+
         public Expr function;
         public List<Expr> args;
 

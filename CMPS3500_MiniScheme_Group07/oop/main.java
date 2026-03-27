@@ -1,3 +1,10 @@
+/**************************************
+ * NAME: Hudson Bakke
+ * FILE: Main.java
+ * ASGT: CMPS 3500 Group Project
+ * DATE: 3/27/2026
+ **************************************/
+
 import java.io.IOException;
 
 public class Main {

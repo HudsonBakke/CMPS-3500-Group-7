@@ -1,3 +1,12 @@
+/**************************************
+ * NAME: Hudson Bakke
+ * FILE: AST.java
+ * ASGT: CMPS 3500 Group Project
+ * DATE: 3/27/2026
+ **************************************/
+
+/// The AST class holds the Abstract Syntax Tree for the MiniScheme program, starting at the root.
+/// The show() method is used for debugging by printing the contents of the AST.
 public class AST {
 
     public Expr.RootExpr root;
@@ -39,6 +48,66 @@ public class AST {
                    +"\n\tElse: " + shownode(if_node.else_expr)
                    +"\n}"
             );
+        }
+        else if (node instanceof Expr.Binding binding_node) {
+            return ("LetBinding {\n"
+                   +"\tName: " + shownode(binding_node.name)
+                   +"\n\tValue: " + shownode(binding_node.value)
+            );
+        }
+        else if (node instanceof Expr.BindingList binding_list_node) {
+            String ret = "LetBindingList {\n";
+            int i = 1;
+            for (Expr binding : binding_list_node.bindings) {
+                ret += "\tBinding" + Integer.toString(i) + ": " + shownode(binding) + "\n";
+                i++;
+            }
+            ret += "}";
+            return ret;
+        }
+        else if (node instanceof Expr.LetExpr let_node) {
+            return ("LetExpression {\n"
+                   +"\tBindings: " + shownode(let_node.bindings)
+                   +"\n\tBody: " + shownode(let_node.body)
+                   +"\n}"
+            );
+        }
+        else if (node instanceof Expr.ParamList param_list_node) {
+            String ret = "ParameterList {\n";
+            int i = 1;
+            for (Expr param : param_list_node.params) {
+                ret += "\tParameter" + Integer.toString(i) + ": " + shownode(param) + "\n";
+                i++;
+            }
+            ret += "}";
+            return ret;
+        }
+        else if (node instanceof Expr.LambdaExpr lambda_node) {
+            return ("LambdaExpression {\n"
+                   +"Parameters: " + shownode(lambda_node.params)
+                   +"Body: " + shownode(lambda_node.body)
+            );
+        }
+        else if (node instanceof Expr.DefineExpr define_node) {
+            return ("DefineExpression {\n"
+                   +"\tName: " + shownode(define_node.name)
+                   +"\n\tValue: " + shownode(define_node.value) 
+            );
+        }
+        else if (node instanceof Expr.CondExpr) {
+            return "cond expressions not implemented yet";
+        }
+
+        else if (node instanceof Expr.CallExpr call_node) {
+            String ret = "CallExpression {\n"
+                        +"\tFunction: " + shownode(call_node.function) + "\n";
+            int i = 1;
+            for (Expr arg : call_node.args) {
+                ret += "\tArgument" + Integer.toString(i) + ": " + shownode(arg) + "\n";
+                i++;
+            }
+            ret += "}";
+            return ret;
         }
         else return "Unknown node type";
     }

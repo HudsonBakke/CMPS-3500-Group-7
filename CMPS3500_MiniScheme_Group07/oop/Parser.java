@@ -1,3 +1,12 @@
+/**************************************
+ * NAME: Hudson Bakke
+ * FILE: Parser.java
+ * ASGT: CMPS 3500 Group Project
+ * DATE: 3/27/2026
+ **************************************/
+
+/// Parser for MiniScheme. ParseExp method recursively returns the following 
+/// expression in the token stream converted into an Expr class
 public final class Parser {
 
     private Parser() {}
@@ -6,8 +15,10 @@ public final class Parser {
 
         Expr new_expr = null;
 
+        // Handles atom nodes
         if (stream.peek().type != TokenType.L_PAREN) {
 
+            // Root expression
             if (stream.peek().type == TokenType.BEGIN_STREAM) {
                 new_expr = new Expr.RootExpr();
                 stream.dequeue();
@@ -17,29 +28,35 @@ public final class Parser {
                 return new_expr;
             }
 
+            // Identifiers
             if (stream.peek().type == TokenType.IDENTIFIER) {
                 new_expr = new Expr.SymbolExpr(stream.peek().val);
             }
+
+            // Integer literals
             else if (stream.peek().type == TokenType.INTEGER) {
                 new_expr = new Expr.IntExpr(Integer.parseInt(stream.peek().val));
             }
+
+            // Boolean literals
             else if (stream.peek().type == TokenType.BOOL_TRUE) {
                 new_expr = new Expr.BoolExpr(true);
-            }
-            else if (stream.peek().type == TokenType.BOOL_FALSE) {
+            } else if (stream.peek().type == TokenType.BOOL_FALSE) {
                 new_expr = new Expr.BoolExpr(false);
             }
-            else {
-                throw new ParserException.InvalidNodeType("Invalid atom node type");
-            }
+
+            // Error if the atom type is unrecognized
+            else throw new ParserException.InvalidNodeType("Invalid atom node type");
 
             stream.dequeue();
         }
 
+        // Handles non-atom nodes
         else {
             stream.dequeue();
             switch (stream.peek().type) {
 
+                // Operator expressions
                 case OPERATOR_PLUS:
                 case OPERATOR_MINUS:
                 case OPERATOR_MULTIPLY:
@@ -49,11 +66,12 @@ public final class Parser {
                 case OPERATOR_GREATER:
                 case OPERATOR_LESSEQUALS:
                 case OPERATOR_GREATEREQUALS:
-                    new_expr = new Expr.OperatorExpr(stream.dequeue().val.charAt(0));
+                    new_expr = new Expr.OperatorExpr(stream.dequeue().val);
                     new_expr.AddTo(ParseExp(stream));
                     new_expr.AddTo(ParseExp(stream));
                     break;
 
+                // Conditional expressions
                 case SPECIAL_IF:
                     stream.dequeue();
                     new_expr = new Expr.IfExpr();
@@ -66,6 +84,7 @@ public final class Parser {
                     // To be implemented later
                     break;
 
+                // Let expressions
                 case SPECIAL_LET:
                     stream.dequeue();
                     new_expr = new Expr.LetExpr();
@@ -73,6 +92,7 @@ public final class Parser {
                     new_expr.AddTo(ParseExp(stream));
                     break;
 
+                // Lambda expressions
                 case SPECIAL_LAMBDA:
                     stream.dequeue();
                     new_expr = new Expr.LambdaExpr();
@@ -80,6 +100,7 @@ public final class Parser {
                     new_expr.AddTo(ParseExp(stream));
                     break;
                 
+                // Define expressions
                 case SPECIAL_DEFINE:
                     stream.dequeue();
                     new_expr = new Expr.DefineExpr();
@@ -87,6 +108,7 @@ public final class Parser {
                     new_expr.AddTo(ParseExp(stream));
                     break;
 
+                // Call expressions
                 case IDENTIFIER:
                 case L_PAREN:
                     new_expr = new Expr.CallExpr();

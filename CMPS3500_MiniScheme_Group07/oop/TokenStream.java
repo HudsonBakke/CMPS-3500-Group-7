@@ -1,3 +1,11 @@
+/**************************************
+ * NAME: Hudson Bakke
+ * FILE: TokenStream.java
+ * ASGT: CMPS 3500 Group Project
+ * DATE: 3/27/2026
+ **************************************/
+
+/// Uses a doubly-linked list to implement a queue ADT for a token stream
 public class TokenStream {
 
     private static class TokenNode {

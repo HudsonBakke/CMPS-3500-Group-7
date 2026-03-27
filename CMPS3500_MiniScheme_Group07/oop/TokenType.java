@@ -1,3 +1,11 @@
+/**************************************
+ * NAME: Hudson Bakke
+ * FILE: TokenType.java
+ * ASGT: CMPS 3500 Group Project
+ * DATE: 3/27/2026
+ **************************************/
+
+/// Enum containing all types of tokens
 public enum TokenType {
 
     BEGIN_STREAM,

@@ -1,7 +1,15 @@
+/**************************************
+ * NAME: Hudson Bakke
+ * FILE: Tokenizer.java
+ * ASGT: CMPS 3500 Group Project
+ * DATE: 3/27/2026
+ **************************************/
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/// Method Tokenize() converts file input into a TokenStream object
 public final class Tokenizer {
 
     private Tokenizer() {}
@@ -41,7 +49,9 @@ public final class Tokenizer {
                 case "define" -> stream.enqueue(new Token(TokenType.SPECIAL_DEFINE, token));
 
                 default       -> stream.enqueue(new Token(
-                    (Character.isDigit(token.charAt(0)) ? TokenType.INTEGER : TokenType.IDENTIFIER), token));
+                    (Character.isDigit(token.charAt(0)) ? 
+                    TokenType.INTEGER : TokenType.IDENTIFIER), 
+                    token));
             }
         }
 
