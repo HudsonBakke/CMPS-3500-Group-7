@@ -120,6 +120,9 @@ public final class Parser {
                 
                 default: ;
             }
+            if (stream.peek().type != TokenType.R_PAREN) {
+                throw new ParserException.MalformedParentheses("Expected right parenthesis");
+            }
             stream.dequeue();
         }
         return new_expr;
@@ -154,7 +157,9 @@ public final class Parser {
                 }
                 break;
         }
-
+        if (stream.peek().type != TokenType.R_PAREN) {
+            throw new ParserException.MalformedParentheses("Expected right parenthesis");
+        }
         stream.dequeue();
         return new_expr;
     }
