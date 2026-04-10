@@ -21,7 +21,7 @@ public abstract class Expr {
         public RootExpr() { children = new ArrayList<>(); }
 
         @Override
-        public Expr AddTo(Expr _newExpr) throws ParserException {
+        public RootExpr AddTo(Expr _newExpr) throws ParserException {
             if (_newExpr instanceof Binding ||
                 _newExpr instanceof BindingList ||
                 _newExpr instanceof ParamList
@@ -40,7 +40,7 @@ public abstract class Expr {
         public IntExpr(int _val) { value = _val; }
 
         @Override
-        public Expr AddTo(Expr _newExpr) throws ParserException {
+        public IntExpr AddTo(Expr _newExpr) throws ParserException {
             throw new ParserException.InvalidAdd
                 ("You cannot add a sub expression to an int literal");
         }
@@ -54,7 +54,7 @@ public abstract class Expr {
         public BoolExpr(boolean _val) { value = _val; }
 
         @Override
-        public Expr AddTo(Expr _newExpr) throws ParserException {
+        public BoolExpr AddTo(Expr _newExpr) throws ParserException {
             throw new ParserException.InvalidAdd
                 ("You cannot add a sub expression to a bool literal");
         }
@@ -68,7 +68,7 @@ public abstract class Expr {
         public SymbolExpr(String _name) { name = _name; }
 
         @Override
-        public Expr AddTo(Expr _newExpr) throws ParserException {
+        public SymbolExpr AddTo(Expr _newExpr) throws ParserException {
             throw new ParserException.InvalidAdd
                 ("You cannot add a sub expression to a symbol");
         }
@@ -89,7 +89,7 @@ public abstract class Expr {
         }
 
         @Override
-        public Expr AddTo(Expr _newExpr) throws ParserException {
+        public OperatorExpr AddTo(Expr _newExpr) throws ParserException {
             if (operand1 == null) operand1 = _newExpr;
             else if (operand2 == null) operand2 = _newExpr;
             else throw new ParserException.InvalidAdd
@@ -113,7 +113,7 @@ public abstract class Expr {
         }
 
         @Override
-        public Expr AddTo(Expr _newExpr) throws ParserException {
+        public IfExpr AddTo(Expr _newExpr) throws ParserException {
             if (condition == null) condition = _newExpr;
             else if (then_expr == null) then_expr = _newExpr;
             else if (else_expr == null) else_expr = _newExpr;
@@ -136,7 +136,7 @@ public abstract class Expr {
         }
 
         @Override
-        public Expr AddTo(Expr _newExpr) throws ParserException {
+        public Binding AddTo(Expr _newExpr) throws ParserException {
             if (name == null) name = _newExpr;
             else if (value == null) value = _newExpr;
             else throw new ParserException.InvalidAdd
@@ -153,7 +153,7 @@ public abstract class Expr {
         public BindingList() { bindings = new ArrayList<>();}
 
         @Override
-        public Expr AddTo(Expr _newExpr) throws ParserException {
+        public BindingList AddTo(Expr _newExpr) throws ParserException {
             bindings.add(_newExpr);
             return this;
         }
@@ -172,7 +172,7 @@ public abstract class Expr {
         }
 
         @Override
-        public Expr AddTo(Expr _newExpr) throws ParserException {
+        public LetExpr AddTo(Expr _newExpr) throws ParserException {
             if (bindings == null) bindings = _newExpr;
             else if (body == null) body = _newExpr;
             else throw new ParserException.InvalidAdd
@@ -189,7 +189,7 @@ public abstract class Expr {
         public ParamList() { params = new ArrayList<>(); }
 
         @Override
-        public Expr AddTo(Expr _newExpr) throws ParserException {
+        public ParamList AddTo(Expr _newExpr) throws ParserException {
             params.add(_newExpr);
             return this;
         }
@@ -208,7 +208,7 @@ public abstract class Expr {
         }
 
         @Override
-        public Expr AddTo(Expr _newExpr) throws ParserException {
+        public LambdaExpr AddTo(Expr _newExpr) throws ParserException {
             if (params == null) params = _newExpr;
             else if (body == null) body = _newExpr;
             else throw new ParserException.InvalidAdd
@@ -230,7 +230,7 @@ public abstract class Expr {
         }
 
         @Override
-        public Expr AddTo(Expr _newExpr) throws ParserException {
+        public DefineExpr AddTo(Expr _newExpr) throws ParserException {
             if (name == null) name = _newExpr;
             else if (value == null) value = _newExpr;
             else throw new ParserException.InvalidAdd
@@ -244,7 +244,7 @@ public abstract class Expr {
     static class CondExpr extends Expr {
 
         @Override
-        public Expr AddTo(Expr _newExpr) throws ParserException {
+        public CondExpr AddTo(Expr _newExpr) throws ParserException {
             return this;
         }
     }
@@ -262,7 +262,7 @@ public abstract class Expr {
         }
 
         @Override
-        public Expr AddTo(Expr _newExpr) throws ParserException {
+        public CallExpr AddTo(Expr _newExpr) throws ParserException {
             if (function == null) function = _newExpr;
             else args.add(_newExpr);
             return this;
