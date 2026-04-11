@@ -1,1 +1,0 @@
-(let ((x 10)) (let ((f (lambda (y) (+ x y)))) (let ((x 20)) (f 5))))
