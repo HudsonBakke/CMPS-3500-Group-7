@@ -96,22 +96,13 @@
 (defun bool-value-p (x)
   (or (eq x t) (eq x nil)))
 
-(defun make-closure (params body env)
-  (list 'CLOSURE params body env))
+(defun make-closure (params body-forms env)
+  (list 'CLOSURE params body-forms env))
 
 (defun closure-p (value)
   (and (listp value)
        (>= (length value) 4)
        (eq (first value) 'CLOSURE)))
-
-(defun closure-params (closure)
-  (second closure))
-
-(defun closure-body (closure)
-  (third closure))
-
-(defun closure-env (closure)
-  (fourth closure))
 
 (defun type-name (value)
   (cond
@@ -163,45 +154,64 @@
             (evaluate (second args) env)
             (evaluate (third args) env)))))
 
+(defun closure-params (closure)
+  (second closure))
+
+(defun closure-body-forms (closure)
+  (third closure))
+
+(defun closure-env (closure)
+  (fourth closure))
+
+(defun eval-sequence (forms env)
+  (if (null forms)
+      (error "PARSE_ERROR")
+      (let ((result nil))
+        (dolist (form forms result)
+          (setf result (evaluate form env))))))
+
 (defun eval-let (args env)
-  (if (/= (length args) 2)
+  (if (< (length args) 2)
       (error "WRONG_ARITY")
       (let* ((bindings (first args))
-             (body (second args)))
+             (body-forms (rest args)))
         (unless (listp bindings)
           (error "PARSE_ERROR"))
         (let ((vars '())
               (vals '()))
           (dolist (binding bindings)
-            (unless (and (listp binding) (= (length binding) 2) (symbolp (first binding)))
+            (unless (and (listp binding)
+                         (= (length binding) 2)
+                         (symbolp (first binding)))
               (error "PARSE_ERROR"))
             (push (first binding) vars)
             (push (evaluate (second binding) env) vals))
-          (evaluate body
-                    (env-extend (reverse vars) (reverse vals) env))))))
+          (eval-sequence body-forms
+                         (env-extend (reverse vars) (reverse vals) env))))))
 
 (defun eval-lambda (args env)
-  (if (/= (length args) 2)
+  (if (< (length args) 2)
       (error "WRONG_ARITY")
       (let ((params (first args))
-            (body (second args)))
+            (body-forms (rest args)))
         (unless (listp params)
           (error "PARSE_ERROR"))
         (dolist (p params)
           (unless (symbolp p)
             (error "PARSE_ERROR")))
-        (make-closure params body env))))
+        (make-closure params body-forms env))))
 
 (defun apply-function (fn args env)
   (let ((arg-values (eval-args args env)))
     (cond
       ((closure-p fn)
        (let ((params (closure-params fn))
-             (body (closure-body fn))
+             (body-forms (closure-body-forms fn))
              (saved-env (closure-env fn)))
          (if (/= (length params) (length arg-values))
              (error "WRONG_ARITY")
-             (evaluate body (env-extend params arg-values saved-env)))))
+             (eval-sequence body-forms
+                            (env-extend params arg-values saved-env)))))
       (t
        (error "TYPE_MISMATCH")))))
 
