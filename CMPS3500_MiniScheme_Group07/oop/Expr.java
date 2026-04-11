@@ -202,6 +202,8 @@ public abstract class Expr {
         public Expr params;
         public Expr body;
 
+        public List<Expr.Binding> environment; // Used by the interpreter
+
         public LambdaExpr() {
             params = null;
             body = null;
@@ -214,6 +216,12 @@ public abstract class Expr {
             else throw new ParserException.InvalidAdd
                 ("Lambda expression is already full");
             return this;
+        }
+
+        public void CaptureEnvironment(List<Expr.Binding> _environment) {
+            // Used to capture the environment that a function is created it.
+            // This is lexical scope
+            environment = new ArrayList<>(_environment);
         }
     }
 

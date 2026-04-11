@@ -84,6 +84,9 @@ public final class Interpreter {
 
         // Lambda expressions just return; that way they can be called in call expressions
         else if (e instanceof Expr.LambdaExpr lambda_expr) {
+            List<Expr.Binding> environment = new ArrayList<>(definitions);
+            environment.addAll(scope);
+            lambda_expr.CaptureEnvironment(environment);
             return lambda_expr;
         }
 
@@ -108,7 +111,7 @@ public final class Interpreter {
                     throw new InterpreterException.WrongArity();
                 }
 
-                List<Expr.Binding> new_scope = new ArrayList<>(scope);
+                List<Expr.Binding> new_scope = new ArrayList<>(func.environment);
                 for (int i = 0; i < call_expr.args.size(); i++) {
                     new_scope.add(
                         new Expr.Binding().AddTo(params.get(i))
