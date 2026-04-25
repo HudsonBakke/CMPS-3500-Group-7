@@ -1,3 +1,10 @@
+/**************************************
+ * NAME: Hudson Bakke
+ * FILE: Interpreter.java
+ * ASGT: CMPS 3500 Group Project
+ * DATE: 4/24/2026
+ **************************************/
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +14,7 @@ public final class Interpreter {
 
     private Interpreter() {}
 
+    /// Recursively interprets an expression and collapses it down to an atom node
     public static Expr Interpret(Expr e, List<Expr.Binding> scope) throws InterpreterException, ParserException {
 
         if (e instanceof Expr.RootExpr root_expr) {
