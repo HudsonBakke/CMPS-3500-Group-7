@@ -34,6 +34,19 @@ enum TokenType {
     SPECIAL_DEFINE
 };
 
-std::string read_file(const std::string& path);
-void tokenizer(std::string str, std::vector<TokenType>& tokens, 
-    std::vector<std::string>& values);
+enum NodeType {
+    NODE_ATOM,
+    NODE_LIST
+};
+
+std::string read_file(const std::string &path);
+void tokenizer(
+    std::string str, std::vector<TokenType> &tokens, 
+    std::vector<std::string> &values
+);
+int parse_expression(
+    const std::vector<TokenType> &tokens,
+    const std::vector<std::string> &values,
+    int &pos
+);
+void print_ast(int node, int depth = 0);

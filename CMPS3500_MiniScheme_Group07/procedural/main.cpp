@@ -12,6 +12,7 @@
 #include "vector"
 
 //print token type
+//remove later
 std::string token_type_tostring(TokenType type) {
     switch (type) {
         case L_PAREN: return "L_PAREN";
@@ -59,6 +60,12 @@ int main() {
     for (int i=0; i<tokens.size(); i++) {
         std::cout << token_type_tostring(tokens[i]) << " : " << values[i] << std::endl;
     }
+    
+    int pos = 0;
+    int root = parse_expression(tokens, values, pos);
 
+    std::cout << "\nAST:\n";
+    print_ast(root);
+    
     return 0;
 }
