@@ -30,6 +30,7 @@ public enum TokenType {
     OPERATOR_GREATEREQUALS,
 
     SPECIAL_IF,
+    SPECIAL_ELSE,
     SPECIAL_COND,
     SPECIAL_LET,
     SPECIAL_LAMBDA,

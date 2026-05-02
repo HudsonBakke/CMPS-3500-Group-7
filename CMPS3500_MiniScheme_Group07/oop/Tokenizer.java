@@ -43,15 +43,19 @@ public final class Tokenizer {
                 case ">="     -> stream.enqueue(new Token(TokenType.OPERATOR_GREATEREQUALS, token));
 
                 case "if"     -> stream.enqueue(new Token(TokenType.SPECIAL_IF, token));
+                case "else"   -> stream.enqueue(new Token(TokenType.SPECIAL_ELSE, token));
                 case "cond"   -> stream.enqueue(new Token(TokenType.SPECIAL_COND, token));
                 case "let"    -> stream.enqueue(new Token(TokenType.SPECIAL_LET, token));
                 case "lambda" -> stream.enqueue(new Token(TokenType.SPECIAL_LAMBDA, token));
                 case "define" -> stream.enqueue(new Token(TokenType.SPECIAL_DEFINE, token));
 
-                default       -> stream.enqueue(new Token(
-                    (Character.isDigit(token.charAt(0)) ? 
-                    TokenType.INTEGER : TokenType.IDENTIFIER), 
-                    token));
+                default       -> {
+                    if (token.matches("-?[0-9]+")) {
+                        stream.enqueue(new Token(TokenType.INTEGER, token));
+                    } else {
+                        stream.enqueue(new Token(TokenType.IDENTIFIER, token));
+                    }
+                }
             }
         }
 

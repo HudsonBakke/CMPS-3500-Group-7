@@ -76,7 +76,7 @@
 
       (t
        (multiple-value-bind (expr rest) (parse-expression tokens)
-         (parse-list rest (cons expr acc)))))))
+         (parse-list rest (cons expr acc))))))
 
 (defun parse-program (tokens)
   (let ((exprs '()))

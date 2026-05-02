@@ -81,7 +81,8 @@ public final class Parser {
                     break;
 
                 case SPECIAL_COND:
-                    // To be implemented later
+                    stream.dequeue();
+                    new_expr = ParseExp(stream, "cond list");
                     break;
 
                 // Let expressions
@@ -118,7 +119,7 @@ public final class Parser {
                     }
                     break;
                 
-                default: ;
+                default: throw new ParserException.InvalidNodeType("Encountered an unexpected token");
             }
             if (stream.peek().type != TokenType.R_PAREN) {
                 throw new ParserException.MalformedParentheses("Expected right parenthesis");
@@ -156,6 +157,45 @@ public final class Parser {
                     new_expr.AddTo(ParseExp(stream));
                 }
                 break;
+
+            case "cond option":
+                stream.dequeue();
+                new_expr = new Expr.CondOption();
+
+                switch (stream.peek().type) {
+
+                    case TokenType.SPECIAL_ELSE:
+                        stream.dequeue();
+                        new_expr.AddTo(new Expr.BoolExpr(true));
+                        break;
+
+                    case TokenType.BOOL_TRUE:
+                        stream.dequeue();
+                        new_expr.AddTo(new Expr.BoolExpr(true));
+                        break;
+
+                    case TokenType.BOOL_FALSE:
+                        stream.dequeue();
+                        new_expr.AddTo(new Expr.BoolExpr(false));
+                        break;
+
+                    case TokenType.L_PAREN:
+                        new_expr.AddTo(ParseExp(stream));
+                        break;
+
+                    default:
+                        throw new ParserException.InvalidNodeType
+                        ("Wrong node type provided in cond option");
+                }
+                new_expr.AddTo(ParseExp(stream));
+                break;
+
+            case "cond list":
+                new_expr = new Expr.CondExpr();
+                while (stream.peek().type == TokenType.L_PAREN) {
+                    new_expr.AddTo(ParseExp(stream, "cond option"));
+                }
+                return new_expr;
         }
         if (stream.peek().type != TokenType.R_PAREN) {
             throw new ParserException.MalformedParentheses("Expected right parenthesis");

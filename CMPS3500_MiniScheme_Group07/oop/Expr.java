@@ -247,12 +247,39 @@ public abstract class Expr {
         }
     }
 
+    /// Cond options
+    /// Must have exactly 2 children - a condition (evaluated to boolean) and a body
+    static class CondOption extends Expr {
+
+        public Expr condition;
+        public Expr body;
+
+        public CondOption() {
+            condition = null;
+            body = null;
+        }
+
+        @Override
+        public CondOption AddTo(Expr _newExpr) throws ParserException {
+            if (condition == null) condition = _newExpr;
+            else if (body == null) body = _newExpr;
+            else throw new ParserException.InvalidAdd
+                ("CondOption is already full");
+            return this;
+        }
+    }
+
     /// Cond expressions
-    /// To be implemented later
+    /// Has one child which is a list of CondOption
     static class CondExpr extends Expr {
+
+        public List<Expr> options;
+
+        public CondExpr() { options = new ArrayList<>(); }
 
         @Override
         public CondExpr AddTo(Expr _newExpr) throws ParserException {
+            options.add(_newExpr);
             return this;
         }
     }
@@ -266,7 +293,7 @@ public abstract class Expr {
 
         public CallExpr() {
             function = null;
-            args = new ArrayList<>();;
+            args = new ArrayList<>();
         }
 
         @Override

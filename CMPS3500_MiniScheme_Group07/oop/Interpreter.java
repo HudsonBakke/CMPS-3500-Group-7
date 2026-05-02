@@ -106,8 +106,15 @@ public final class Interpreter {
             return null;
         }
 
-        else if (e instanceof Expr.CondExpr) {
-            return null; // Cond expressions to be implemented later
+        else if (e instanceof Expr.CondExpr cond_expr) {
+            for (Expr option : cond_expr.options) {
+                Expr.CondOption condOption = (Expr.CondOption) option;
+                Expr condition = Interpret(condOption.condition, scope);
+                if (VerifyBool(condition).value) {
+                    return Interpret(condOption.body, scope);
+                }
+            }
+            return null;
         }
 
         else if (e instanceof Expr.CallExpr call_expr) {
