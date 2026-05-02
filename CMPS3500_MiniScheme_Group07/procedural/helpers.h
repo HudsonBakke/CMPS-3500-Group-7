@@ -39,6 +39,17 @@ enum NodeType {
     NODE_LIST
 };
 
+enum ValueType {
+    VAL_INT,
+    VAL_BOOL,
+    VAL_CLOSURE,
+    VAL_ERROR
+};
+
+extern std::vector<NodeType> nodeType;
+extern std::vector<std::string> nodeValue;
+extern std::vector<std::vector<int>> children;
+
 std::string read_file(const std::string &path);
 void tokenizer(
     std::string str, std::vector<TokenType> &tokens, 
@@ -50,3 +61,8 @@ int parse_expression(
     int &pos
 );
 void print_ast(int node, int depth = 0);
+int eval(int node, int env);
+void print_value(int value);
+int make_env(int parent);
+void env_define(int env, std::string name, int value);
+int make_int(int x);

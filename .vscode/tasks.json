@@ -37,6 +37,7 @@
                     "${workspaceFolder}/CMPS3500_MiniScheme_Group07/procedural/file_loader_stub.cpp",
                     "${workspaceFolder}/CMPS3500_MiniScheme_Group07/procedural/tokenizer.cpp",
                     "${workspaceFolder}/CMPS3500_MiniScheme_Group07/procedural/parser.cpp",
+                    "${workspaceFolder}/CMPS3500_MiniScheme_Group07/procedural/evaluator.cpp",
                     "-o",
                     "${workspaceFolder}/CMPS3500_MiniScheme_Group07/procedural/main"
                 ]
