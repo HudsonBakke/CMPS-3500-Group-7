@@ -12,6 +12,7 @@
 #include "vector"
 
 //print token type
+//remove later
 std::string token_type_tostring(TokenType type) {
     switch (type) {
         case L_PAREN: return "L_PAREN";
@@ -44,7 +45,8 @@ std::string token_type_tostring(TokenType type) {
 
 int main() {
     //path to input
-    const std::string path = "../tests/public/core_04.scm";
+    const std::string path = "../tests/public/recursion_02.scm";
+    //const std::string path = "custom.scm";
 
     //read file and print expression
     std::string expression = read_file(path);
@@ -59,6 +61,20 @@ int main() {
     for (int i=0; i<tokens.size(); i++) {
         std::cout << token_type_tostring(tokens[i]) << " : " << values[i] << std::endl;
     }
+    
+    int pos = 0;
+    int globalEnv = make_env(-1);
 
+    while(pos < tokens.size()) {
+        int root = parse_expression(tokens, values, pos);
+
+        std::cout << "\nAST:\n";
+        print_ast(root);
+
+        std::cout << "\nResult:\n";
+        int result = eval(root, globalEnv);
+        print_value(result);
+    }
+    
     return 0;
 }
