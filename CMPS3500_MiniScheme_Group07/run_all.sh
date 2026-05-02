@@ -6,10 +6,17 @@ cd "$SCRIPT_DIR"
 
 # ---------- Build helpers ----------
 build_procedural() {
+    build_procedural() {
     if [ ! -f procedural/minischeme ]; then
         echo "[build] Compiling procedural (C++)..." >&2
-        g++ -std=c++17 -O2 -o procedural/minischeme procedural/minischeme.cpp 2>&1
+        g++ -std=c++17 -O2 -o procedural/minischeme \
+            procedural/main.cpp \
+            procedural/tokenizer.cpp \
+            procedural/file_loader_stub.cpp \
+            procedural/parser.cpp \
+            procedural/evaluator.cpp 2>&1
     fi
+}
 }
 
 build_oop() {
