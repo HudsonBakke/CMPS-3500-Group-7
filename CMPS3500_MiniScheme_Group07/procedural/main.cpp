@@ -84,24 +84,40 @@ int main(int argc, char* argv[]) {
         int root = parse_expression(tokens, values, pos);
         std::string captured = cap.release();
 
-        // parser returned -1 = parse error
-        if (root == -1) {
-            hadError = true;
-            errorCategory = "PARSE_ERROR";
+        if (root == -1 || has_parse_error()) {
+            std::cout << "Status: ERROR | Error: PARSE_ERROR\n";
             break;
         }
 
-        StdoutCapture cap2;
+        //std::cout << "\nAST:\n";
+        //print_ast(root);
+
+        //std::cout << "\nResult:\n";
         int result = eval(root, globalEnv);
-        captured += cap2.release();
 
-        if (valueType[result] == VAL_ERROR) {
-            hadError = true;
-            errorCategory = map_error(captured);
-            break;
+        bool isDefine =
+            nodeType[root] == NODE_LIST &&
+            children[root].size() > 0 && 
+            nodeType[children[root][0]] == NODE_ATOM &&
+            nodeValue[children[root][0]] == "define";
+
+        if (isDefine) {
+            continue;
         }
 
-        lastResult = result;
+        if (is_error_value(result)) {
+            std::cout << "Status: ERROR | Error: "
+                      << get_eval_error() << std::endl;
+        } else if (is_bool_value(result)) {
+            std::cout << "Result: " << value_result_string(result)
+                      << " ; Type: " << value_type_string(result)
+                      << std::endl;
+        } else {
+            std::cout << "Status: OK | Result: "
+                      << value_result_string(result)
+                      << " | Type: " << value_type_string(result)
+                      << std::endl;
+        }
     }
 
     std::cout << "Implementation: procedural\n";

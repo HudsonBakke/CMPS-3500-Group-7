@@ -26,6 +26,17 @@ std::vector<int> closureParams;
 std::vector<int> closureBody;
 std::vector<int> closureEnv;
 
+std::string evalError = "";
+void set_eval_error(std::string error) {
+    if (evalError == "") {
+        evalError = error;
+    }
+}
+
+std::string get_eval_error() {
+    return evalError;
+}
+
 int make_int(int x) {
     valueType.push_back(VAL_INT);
     valueInt.push_back(x);
@@ -98,7 +109,8 @@ int env_lookup(int env, std::string name) {
         }
         current = envParent[current];
     }
-    std::cout << "Evaluation error: undefined variable " << name << "\n";
+
+    set_eval_error("UNDECLARED_IDENTIFIER");
     return make_error();
 }
 
@@ -115,13 +127,13 @@ bool is_integer_string(std::string s) {
 
 int eval_arithmetic(std::string op, int node, int env) {
     if (children[node].size() < 3) {
-        std::cout << "Evaluation error: needs two operands\n";
+        set_eval_error("WRONG_ARITY");
         return make_error();
     }
 
     int first = eval(children[node][1], env);
     if (valueType[first] != VAL_INT) {
-        std::cout << "Evaluation error: operand is not an integer\n";
+        set_eval_error("TYPE_MISMATCH");
         return make_error();
     }
 
@@ -130,7 +142,7 @@ int eval_arithmetic(std::string op, int node, int env) {
     for (int i = 2; i < (int)children[node].size(); i++) {
         int next = eval(children[node][i], env);
         if (valueType[next] != VAL_INT) {
-            std::cout << "Evaluation error: operand is not an integer\n";
+            set_eval_error("TYPE_MISMATCH");
             return make_error();
         }
 
@@ -142,7 +154,7 @@ int eval_arithmetic(std::string op, int node, int env) {
             result *= valueInt[next];
         } else if (op == "/") {
             if (valueInt[next] == 0) {
-                std::cout << "DIVISION_BY_ZERO\n";
+                set_eval_error("DIVISION_BY_ZERO");
                 return make_error();
             }
             result /= valueInt[next];
@@ -154,7 +166,7 @@ int eval_arithmetic(std::string op, int node, int env) {
 
 int eval_comparison(std::string op, int node, int env) {
     if (children[node].size() != 3) {
-        std::cout << "Evaluation error: comparison needs exactly two operands\n";
+        set_eval_error("WRONG_ARITY");
         return make_error();
     }
 
@@ -162,7 +174,7 @@ int eval_comparison(std::string op, int node, int env) {
     int right = eval(children[node][2], env);
 
     if (valueType[left] != VAL_INT || valueType[right] != VAL_INT) {
-        std::cout << "Evaluation error: comparison operands must be integers\n";
+        set_eval_error("TYPE_MISMATCH");
         return make_error();
     }
 
@@ -175,7 +187,7 @@ int eval_comparison(std::string op, int node, int env) {
     if (op == "<=") return make_bool(a <= b);
     if (op == ">=") return make_bool(a >= b);
 
-    std::cout << "Evaluation error: unknown comparison operator " << op << "\n";
+    set_eval_error("PARSE_ERROR");
     return make_error();
 }
 
@@ -186,7 +198,7 @@ bool is_true_value(int value) {
 
 int eval_if(int node, int env) {
     if (children[node].size() != 4) {
-        std::cout << "Evaluation error: if statement must have test, then, else\n";
+        set_eval_error("PARSE_ERROR");
         return make_error();
     }
     int condition = eval(children[node][1], env);
@@ -199,13 +211,13 @@ int eval_if(int node, int env) {
 
 int eval_let(int node, int env) {
     if (children[node].size() < 3) {
-        std::cout << "Evaluation error: let needs bindings and body\n";
+        set_eval_error("WRONG_ARITY");
         return make_error();
     }
 
     int bindingsNode = children[node][1];
     if (nodeType[bindingsNode] != NODE_LIST) {
-        std::cout << "Evaluation error: let bindings must be a list\n";
+        set_eval_error("TYPE_MISMATCH");
         return make_error();
     }
 
@@ -214,7 +226,7 @@ int eval_let(int node, int env) {
     for (int i = 0; i < (int)children[bindingsNode].size(); i++) {
         int binding = children[bindingsNode][i];
         if (nodeType[binding] != NODE_LIST || children[binding].size() != 2) {
-            std::cout << "Evaluation error: bad let binding\n";
+            set_eval_error("PARSE_ERROR");
             return make_error();
         }
 
@@ -222,7 +234,7 @@ int eval_let(int node, int env) {
         int valueNode = children[binding][1];
 
         if (nodeType[nameNode] != NODE_ATOM) {
-            std::cout << "Evaluation error: let binding name must be an atom\n";
+            set_eval_error("TYPE_MISMATCH");
             return make_error();
         }
 
@@ -240,13 +252,13 @@ int eval_let(int node, int env) {
 
 int eval_lambda(int node, int env) {
     if (children[node].size() < 3) {
-        std::cout << "Evaluation error: lambda needs parameters and body\n";
+        set_eval_error("WRONG_ARITY");
         return make_error();
     }
 
     int paramsNode = children[node][1];
     if (nodeType[paramsNode] != NODE_LIST) {
-        std::cout << "Evaluation error: lambda parameters must be a list\n";
+        set_eval_error("TYPE_MISMATCH");
         return make_error();
     }
 
@@ -262,7 +274,7 @@ int apply_closure(int functionValue, int callNode, int env) {
     int paramCount = children[paramsNode].size();
 
     if (argCount != paramCount) {
-        std::cout << "Evaluation error: wrong number of arguments\n";
+        set_eval_error("WRONG_ARITY");
         return make_error();
     }
 
@@ -282,14 +294,14 @@ int apply_closure(int functionValue, int callNode, int env) {
 
 int eval_cond(int node, int env) {
     if (children[node].size() < 2) {
-        std::cout << "Evaluation error: cond needs at least one clause\n";
+        set_eval_error("WRONG_ARITY");
         return make_error();
     }
 
     for (int i = 1; i < (int)children[node].size(); i++) {
         int clause = children[node][i];
         if (nodeType[clause] != NODE_LIST || children[clause].size() != 2) {
-            std::cout << "Evaluation error: bad cond clause\n";
+            set_eval_error("PARSE_ERROR");
             return make_error();
         }
 
@@ -306,13 +318,13 @@ int eval_cond(int node, int env) {
         }
     }
 
-    std::cout << "Evaluation error: no cond condition was true\n";
+    set_eval_error("TYPE_MISMATCH");
     return make_error();
 }
 
 int eval_define(int node, int env) {
     if (children[node].size() != 3) {
-        std::cout << "Evaluation error: define needs a name and value\n";
+        set_eval_error("WRONG_ARITY");
         return make_error();
     }
 
@@ -320,7 +332,7 @@ int eval_define(int node, int env) {
     int valueNode = children[node][2];
 
     if (nodeType[nameNode] != NODE_ATOM) {
-        std::cout << "Evaluation error: define name must be an identifier\n";
+        set_eval_error("TYPE_MISMATCH");
         return make_error();
     }
 
@@ -344,7 +356,7 @@ int eval(int node, int env) {
 
     if (nodeType[node] == NODE_LIST) {
         if (children[node].size() == 0) {
-            std::cout << "Evaluation error: empty list\n";
+            set_eval_error("PARSE_ERROR");
             return make_error();
         }
 
@@ -366,13 +378,13 @@ int eval(int node, int env) {
 
         int functionValue = eval(first, env);
         if (valueType[functionValue] != VAL_CLOSURE) {
-            std::cout << "Evaluation error: first item is not a function\n";
+            set_eval_error("TYPE_MISMATCH");
             return make_error();
         }
         return apply_closure(functionValue, node, env);
     }
 
-    std::cout << "Evaluation error: unknown node type\n";
+    set_eval_error("TYPE_MISMATCH");
     return make_error();
 }
 
@@ -386,4 +398,48 @@ void print_value(int value) {
     } else {
         std::cout << "error\n";
     }
+}
+
+std::string value_result_string(int value) {
+    if (valueType[value] == VAL_INT) {
+        return std::to_string(valueInt[value]);
+    }
+
+    if (valueType[value] == VAL_BOOL) {
+        if (valueBool[value]) {
+            return "#t";
+        } else {
+            return "#f";
+        }
+    }
+
+    if (valueType[value] == VAL_CLOSURE) {
+        return "<closure>";
+    }
+
+    return "error";
+}
+
+std::string value_type_string(int value) {
+    if (valueType[value] == VAL_INT) {
+        return "int";
+    }
+
+    if (valueType[value] == VAL_BOOL) {
+        return "bool";
+    }
+
+    if (valueType[value] == VAL_CLOSURE) {
+        return "closure";
+    }
+
+    return "error";
+}
+
+bool is_error_value(int value) {
+    return valueType[value] == VAL_ERROR;
+}
+
+bool is_bool_value(int value) {
+    return valueType[value] == VAL_BOOL;
 }

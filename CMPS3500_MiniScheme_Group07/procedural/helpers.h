@@ -66,3 +66,13 @@ void print_value(int value);
 int make_env(int parent);
 void env_define(int env, std::string name, int value);
 int make_int(int x);
+
+//for output
+std::string value_result_string(int value);
+std::string value_type_string(int value);
+bool is_error_value(int value);
+bool is_bool_value(int value);
+std::string get_eval_error();
+void set_eval_error(std::string error);
+void set_parse_error();
+bool has_parse_error();
