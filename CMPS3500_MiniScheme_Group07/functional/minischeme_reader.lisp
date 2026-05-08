@@ -76,7 +76,7 @@
 
       (t
        (multiple-value-bind (expr rest) (parse-expression tokens)
-         (parse-list rest (cons expr acc))))))
+         (parse-list rest (cons expr acc)))))))  ; <-- fixed: was missing one closing paren
 
 (defun parse-program (tokens)
   (let ((exprs '()))
@@ -359,21 +359,14 @@
 ;;;; =========================
 
 (defun print-result (case-path value)
-  (let ((filename (file-namestring case-path)))
-    (if (bool-value-p value)
-        (format t "~a -> Result: ~a ; Type: ~a~%"
-                filename
-                (print-value value)
-                (type-name value))
-        (format t "~a -> Status: OK | Result: ~a | Type: ~a~%"
-                filename
-                (print-value value)
-                (type-name value)))))
+  (format t "Implementation: functional~%")
+  (format t "Case: ~a~%" case-path)
+  (format t "Status: OK~%")
+  (format t "Result: ~a~%" (print-value value))
+  (format t "Type: ~a~%" (type-name value)))
 
-                
 (defun print-error (case-path e)
-  (let ((filename (file-namestring case-path))
-        (msg (princ-to-string e)))
+  (let ((msg (princ-to-string e)))
     (let ((err-type
            (cond
              ((search "PARSE_ERROR" msg) "PARSE_ERROR")
@@ -382,7 +375,10 @@
              ((search "TYPE_MISMATCH" msg) "TYPE_MISMATCH")
              ((search "DIVISION_BY_ZERO" msg) "DIVISION_BY_ZERO")
              (t msg))))
-      (format t "~a -> Status: ERROR | Error: ~a~%" filename err-type))))
+      (format t "Implementation: functional~%")
+      (format t "Case: ~a~%" case-path)
+      (format t "Status: ERROR~%")
+      (format t "Error: ~a~%" err-type))))
 
 (defun main ()
   (let ((args sb-ext:*posix-argv*))
