@@ -14,6 +14,17 @@ std::vector<NodeType> nodeType;
 std::vector<std::string> nodeValue;
 std::vector<std::vector<int>> children;
 
+//for output
+bool parseError = false;
+
+void set_parse_error() {
+    parseError = true;
+}
+
+bool has_parse_error() {
+    return parseError;
+}
+
 //nodes for processing
 int makeNode(NodeType type, std::string value = "") {
     nodeType.push_back(type);
@@ -30,7 +41,7 @@ int parse_expression(
 ) {
     // if position is indexing out of bounds, stop
     if (pos >= tokens.size()) {
-        std::cout << "Parsing error: unexpected end of input\n";
+        set_parse_error();
         return -1;
     }
 
@@ -50,7 +61,7 @@ int parse_expression(
 
         //make sure root expression closes
         if (pos >= tokens.size()) {
-            std::cout << "Parse error: missing closing parenthesis\n";
+            set_parse_error();
             return -1;
         }
 
@@ -61,7 +72,7 @@ int parse_expression(
 
     //right parenthesis without a left
     if (tokens[pos] == R_PAREN) {
-        std::cout << "Parse error: unexpected ')'\n";
+        set_parse_error();
         return -1;
     }
 

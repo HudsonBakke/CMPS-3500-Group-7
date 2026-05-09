@@ -60,7 +60,9 @@ void tokenizer(std::string str,
         else if (atom == "lambda") tokens.push_back(SPECIAL_LAMBDA);
         else if (atom == "define") tokens.push_back(SPECIAL_DEFINE);
 
-        else if (std::isdigit(atom[0]) || (atom[0] == '-' && std::isdigit(atom[1]))) tokens.push_back(INTEGER);
+        else if (std::isdigit(atom[0]) || 
+                (atom[0] == '-' && std::isdigit(atom[1])))
+            tokens.push_back(INTEGER);
         else tokens.push_back(IDENTIFIER);
     }
 }
