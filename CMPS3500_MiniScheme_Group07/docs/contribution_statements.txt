@@ -1,4 +1,22 @@
-Student Name:
-Main files/modules worked on:
-Main responsibilities:
+Student Name: Hudson Bakke  
+Main files/modules worked on: The entire Java implementation  
+Main responsibilities: I developed the full Java-based MiniScheme interpreter, including the lexer, parser, AST representation, and evaluator.
+
 What I can explain clearly:
+
+The Java implementation is structured in three main stages: lexical analysis, parsing, and evaluation.
+
+The lexer reads raw input and converts it into a stream of tokens using a queue implemented as a doubly 
+linked list. Tokens are classified into types such as integers, identifiers, booleans, parentheses, and 
+special keywords (e.g., if, let, lambda, cond). Negative integers are handled explicitly during token classification.
+
+The parser consumes tokens from the stream and constructs an abstract syntax tree (AST) using recursive descent. 
+Each expression type (such as arithmetic expressions, conditionals, let bindings, lambda expressions, and cond clauses) 
+is mapped to a corresponding AST node class. The parser uses helper cases to handle nested structures like cond options 
+and ensures proper parenthesis matching.
+
+The evaluator recursively traverses the AST and evaluates expressions using postorder traversal. It maintains an 
+environment structure for variable bindings to support lexical scope, including nested scopes for let and function 
+application. Special forms such as if, let, lambda, and cond are evaluated according to MiniScheme semantics. For cond, 
+conditions are evaluated in order until the first true condition is found. The evaluator also enforces runtime checks 
+and produces standardized errors such as UNDECLARED_IDENTIFIER, TYPE_MISMATCH, and DIVISION_BY_ZERO.
