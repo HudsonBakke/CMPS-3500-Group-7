@@ -1,0 +1,3 @@
+hidden_demo_01.scm -> Result: 15 ; Type: int
+hidden_demo_02.scm -> Result: 12 ; Type: int
+hidden_demo_03.scm -> Result: 20 ; Type: int

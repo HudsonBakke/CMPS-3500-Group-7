@@ -20,3 +20,68 @@ environment structure for variable bindings to support lexical scope, including 
 application. Special forms such as if, let, lambda, and cond are evaluated according to MiniScheme semantics. For cond, 
 conditions are evaluated in order until the first true condition is found. The evaluator also enforces runtime checks 
 and produces standardized errors such as UNDECLARED_IDENTIFIER, TYPE_MISMATCH, and DIVISION_BY_ZERO.
+
+Student Name: Parneet Minhas
+Main files/modules worked on: run_all.sh, presentation slides, project integration and demo setup
+Main responsibilities: Built and maintained the command-driven runner (run_all.sh), ensured all three implementations 
+produce standardized output format, integrated the runner with all three implementations, prepared the live demo setup, 
+and created the group presentation.
+
+What I can explain clearly:
+The runner (run_all.sh) acts as the single entry point for all three implementations. It uses a case statement to 
+route commands — list-cases finds and prints all test files, run-case builds the requested implementation if needed 
+and runs it with the given file path, and compare-case runs all three implementations on the same file and formats 
+the results side by side. Each implementation is built automatically if the binary or class file is missing. The 
+standardized output format Implementation, Case, Status, Result, Type is parsed by the runner to produce the 
+compare-case output. I also ensured the runner handles invalid paths and bad commands gracefully without crashing.
+
+Student Name: Joshua Caronongan
+Main files/modules worked on: main.lisp, minischeme_reader.lisp
+Main responsibilities: making sure the lisp files work
+First, the program reads a MiniScheme source file and tokenizes the input. Then the parser converts the tokens into 
+nested Lisp structures representing the program. After parsing, the evaluator executes expressions using environments 
+and closures to support lexical scope, lambda functions, recursion, and conditionals. Finally, the interpreter prints 
+the result and type information.
+
+
+Student Name: Adam Gregory
+Main files/modules worked on: Procedural implementation.
+Main responsibilities: I was responsible for the helpers, tokenizer, parser, and evaluator for the cpp implementation.
+
+What I can explain clearly: 
+
+The procedural implementation is ordered in the tokenizing stage, parsing stage, and evaluation stage. In main, I create
+ two vectors. One is for the TokenType and the other is for the corresponding value. TokenType is an enum in helpers.h 
+ that holds the different tokens. These vectors are uninitialized, and passed by reference to the tokenizer with the 
+ expression read from the challenge file. The tokenizer converts the raw input string into a set of tokens to be used by 
+ the parser by first, adding spaces around the parenthesis for processing around white space. Then I use an istringstream 
+ to read the modified string one atom at a time. For each atom, I push it into the values vector and then determine its type 
+ using a series of if statements. Each condition checks whether the atom matches a known token type. If the atom matches 
+ none of the known types, it is classified as an identifier by default. The token type is then added to the tokens vector. 
+ This system maintains alignment in the token type and value vectors. 
+	At this point, the tokens are ready to be passed to the parser. I begin parsing by using an integer pos to track the 
+    current position in the token list. I create an integer called root, which stores the node index returned by 
+    parse_expression(). This is a recursive function because Scheme expressions can contain nested expressions. As it 
+    reads through the token list, it builds a pseudo-AST using parallel vectors instead of classes or structs. Each AST 
+    node is represented by an index into vectors such as nodeType, nodeValue, and children. If the current token is a left 
+    parenthesis, the parser creates a list node and then recursively parses each child expression until it reaches the 
+    matching right parenthesis. Each child node index is added to the list node’s children vector. When the closing 
+    parenthesis is reached, the function skips it and returns the index of the completed list node. If the current token
+     is not a left parenthesis, the parser treats it as an atom, creates an atom node using the token value, advances pos, 
+     and returns that atom node’s index.
+	My evaluator takes the AST node index and an environment index. The node tells the evaluator what part of the AST to 
+    process, and env tells it where variables should be looked up. First, eval() checks whether the node is an atom or a 
+    list. If it is an atom, it handles simple values directly. Integers become integer values, #t and #f become boolean 
+    values, and anything else is treated as an identifier that must be looked up in the current environment. If the node 
+    is a list, the evaluator looks at the first child to determine what kind of expression it is. Operators like +, -, *, 
+    and / are sent to eval_arithmetic(). Comparison operators like =, <, and >= are sent to eval_comparison(). Special 
+    forms such as if, let, lambda, cond, and define each have their own evaluator function. For normal function calls, 
+    the first element is evaluated as a function. If it does not evaluate to a closure, the evaluator reports a type 
+    mismatch. If it is a closure, apply_closure() creates a new environment, binds the function parameters to the 
+    evaluated arguments, and then evaluates the lambda body in that new environment. This is what supports function 
+    application and lexical scope. The environment system is also stored with parallel vectors. Each environment has
+     a parent environment, a list of variable names, and a list of corresponding values. When looking up a variable, 
+     env_lookup() checks the current environment first, then walks upward through parent environments until it 
+     finds the name or reports an undeclared identifier. Closures are also represented with parallel vectors. A 
+     closure stores the parameter list, the lambda body, and the environment where the lambda was created. This 
+     saved environment is what allows recursive functions and lexical scope to work correctly.
